@@ -9,7 +9,9 @@ class PeopleConfig(AppConfig):
         from .models import Person
         from .services import fetch_and_save_people
 
-        if Person.objects.exists():
+        try:
+            if Person.objects.exists():
+                return
+            fetch_and_save_people(1000)
+        except Exception:
             return
-
-        fetch_and_save_people(1000)
