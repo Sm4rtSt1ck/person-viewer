@@ -1,0 +1,51 @@
+{% extends "people/base.html" %}
+
+{% block content %}
+<h1>Person Viewer</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <label>Загрузить людей из API:</label>
+    <input type="number" name="count" min="1" placeholder="Количество">
+    <button type="submit">Загрузить</button>
+</form>
+
+<hr>
+
+<table>
+    <thead>
+        <tr>
+            <th>Пол</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            <th>Адрес</th>
+            <th>Страница</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for person in page_obj %}
+        <tr>
+            <td>{{ person.gender }}</td>
+            <td>{{ person.first_name }}</td>
+            <td>{{ person.last_name }}</td>
+            <td>{{ person.phone }}</td>
+            <td>{{ person.email }}</td>
+            <td>{{ person.address }}</td>
+            <td><a href="/{{ person.id }}/">Открыть</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+    {% endif %}
+    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
+    {% endif %}
+</div>
+{% endblock %}
