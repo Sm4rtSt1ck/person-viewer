@@ -6,12 +6,15 @@ class PeopleConfig(AppConfig):
     name = 'people'
 
     def ready(self):
-        from .models import Person
-        from .services import fetch_and_save_people
+        from django.db.models.signals import post_migrate
+        post_migrate.connect(load_initial_data, sender=self)
 
-        try:
-            if Person.objects.exists():
-                return
-            fetch_and_save_people(1000)
-        except Exception:
-            return
+
+def load_initial_data(sender, **kwargs):
+    from .models import Person
+    from .services import fetch_and_save_people
+
+    if Person.objects.exists():
+        return
+
+    fetch_and_save_people(1000)

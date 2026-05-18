@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 from .models import Person
 
@@ -10,6 +11,9 @@ def fetch_and_save_people(count: int) -> int:
     response.raise_for_status()
     data = response.json()
 
+    if isinstance(data, dict):
+            data = [data]
+
     people = [
         Person(
             gender=item["GenderCode"],
@@ -18,6 +22,13 @@ def fetch_and_save_people(count: int) -> int:
             phone=item["Phone"],
             email=item["Email"],
             address=item["Address"],
+            passport_num=item["PasportNum"],
+            passport_code=item["PasportCode"],
+            passport_otd=item["PasportOtd"],
+            passport_date=datetime.strptime(item["PasportDate"], "%d.%m.%Y").date(),
+            inn_fiz=item["inn_fiz"],
+            snils=item["snils"],
+            oms=item["oms"],
         )
         for item in data
     ]
