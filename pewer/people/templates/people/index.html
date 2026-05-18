@@ -1,51 +1,67 @@
 {% extends "people/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'people/index.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Person Viewer</h1>
-
-<form method="post">
+<form class="form" method="post">
     {% csrf_token %}
-    <label>Загрузить людей из API:</label>
     <input type="number" name="count" min="1" placeholder="Количество">
     <button type="submit">Загрузить</button>
 </form>
 
-<hr>
-
-<table>
-    <thead>
-        <tr>
-            <th>Пол</th>
-            <th>Имя</th>
-            <th>Фамилия</th>
-            <th>Телефон</th>
-            <th>Email</th>
-            <th>Адрес</th>
-            <th>Страница</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for person in page_obj %}
-        <tr>
-            <td>{{ person.gender }}</td>
-            <td>{{ person.first_name }}</td>
-            <td>{{ person.last_name }}</td>
-            <td>{{ person.phone }}</td>
-            <td>{{ person.email }}</td>
-            <td>{{ person.address }}</td>
-            <td><a href="/{{ person.id }}/">Открыть</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Пол</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Телефон</th>
+                <th>Email</th>
+                <th>Адрес</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for person in page_obj %}
+            <tr>
+                <td>
+                    <span class="gender {% if person.gender == 'woman' %}woman{% else %}man{% endif %}">
+                        {% if person.gender == 'woman' %}женщина{% else %}мужчина{% endif %}
+                    </span>
+                </td>
+                <td>{{ person.first_name }}</td>
+                <td>{{ person.last_name }}</td>
+                <td class="mono">{{ person.phone }}</td>
+                <td class="mono">{{ person.email }}</td>
+                <td>{{ person.address }}</td>
+                <td><a class="person-link" href="/{{ person.id }}/">#{{ person.id }} →</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <div class="pagination">
     {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+        <a href="?page={{ page_obj.previous_page_number }}">←</a>
     {% endif %}
-    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+            <span class="current">{{ num }}</span>
+        {% elif num == 1 or num == page_obj.paginator.num_pages or num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+            <span class="dots">...</span>
+        {% endif %}
+    {% endfor %}
+
     {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
+        <a href="?page={{ page_obj.next_page_number }}">→</a>
     {% endif %}
 </div>
 {% endblock %}

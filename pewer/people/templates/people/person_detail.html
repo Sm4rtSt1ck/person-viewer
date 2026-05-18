@@ -1,25 +1,42 @@
 {% extends "people/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'people/person_detail.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>{{ person.first_name }} {{ person.last_name }}</h1>
+<div class="card">
+    <div class="card-title">{{ person.first_name }} {{ person.last_name }}</div>
+    <div class="card-sub">#{{ person.id }}</div>
+    <hr class="divider">
 
-<table>
-    <tr><th>Пол</th><td>{{ person.gender }}</td></tr>
-    <tr><th>Имя</th><td>{{ person.first_name }}</td></tr>
-    <tr><th>Фамилия</th><td>{{ person.last_name }}</td></tr>
-    <tr><th>Телефон</th><td>{{ person.phone }}</td></tr>
-    <tr><th>Email</th><td>{{ person.email }}</td></tr>
-    <tr><th>Адрес</th><td>{{ person.address }}</td></tr>
-    <tr><th>Номер паспорта</th><td>{{ person.passport_num }}</td></tr>
-    <tr><th>Код паспорта</th><td>{{ person.passport_code }}</td></tr>
-    <tr><th>Кем выдан</th><td>{{ person.passport_otd }}</td></tr>
-    <tr><th>Дата выдачи паспорта</th><td>{{ person.passport_date }}</td></tr>
-    <tr><th>ИНН</th><td>{{ person.inn_fiz }}</td></tr>
-    <tr><th>СНИЛС</th><td>{{ person.snils }}</td></tr>
-    <tr><th>ОМС</th><td>{{ person.oms }}</td></tr>
-</table>
+    <div class="field">
+        <span class="field-label">Пол</span>
+        <span>
+            <span class="gender {% if person.gender == 'woman' %}woman{% else %}man{% endif %}">
+                {% if person.gender == 'woman' %}женщина{% else %}мужчина{% endif %}
+            </span>
+        </span>
+    </div>
 
-<br>
-<a href="/">← Назад</a>
-<a href="/random/">Случайный человек</a>
+    <div class="field">
+        <span class="field-label">Телефон</span>
+        <span class="field-value mono">{{ person.phone }}</span>
+    </div>
+
+    <div class="field">
+        <span class="field-label">Email</span>
+        <span class="field-value mono">{{ person.email }}</span>
+    </div>
+
+    <div class="field">
+        <span class="field-label">Адрес</span>
+        <span class="field-value">{{ person.address }}</span>
+    </div>
+
+    <div class="actions">
+        <a class="btn-back" href="/">← Назад</a>
+    </div>
+</div>
 {% endblock %}
