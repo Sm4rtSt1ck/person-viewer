@@ -15,7 +15,7 @@ def index(request):
             fetch_and_save_people(count)
         return redirect('index')
 
-    people = Person.objects.all()
+    people = Person.objects.all().order_by('id')
     paginator = Paginator(people, 20)
     page = request.GET.get('page', 1)
     page_obj = paginator.get_page(page)
